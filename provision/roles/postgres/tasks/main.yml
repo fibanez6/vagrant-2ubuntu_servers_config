@@ -1,0 +1,12 @@
+---
+
+- name: Postgres set-up
+  apt:
+    name: "{{item}}"
+    state: installed
+    update_cache: yes
+  with_items:
+    - postgresql
+    - libpq-dev
+    - python-psycopg2
+

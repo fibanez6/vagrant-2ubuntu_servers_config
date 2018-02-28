@@ -1,0 +1,8 @@
+---
+
+- name: server set-up
+  hosts: servervr
+  become: yes
+
+  roles:
+    - common

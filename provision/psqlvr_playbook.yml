@@ -1,0 +1,10 @@
+---
+
+- name: postgres server set-up
+  hosts: psqlvr
+  become: yes
+  gather_facts: no
+
+  roles:
+    - common
+    - postgres

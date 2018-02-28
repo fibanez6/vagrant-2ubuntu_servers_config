@@ -14,9 +14,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         servervr.vm.box = "ubuntu/trusty64"
         servervr.vm.hostname = "servervr"
         servervr.vm.network "private_network", ip: "172.16.3.10"
-        # servervr.vm.provision "ansible" do |ansible|
-        #    ansible.playbook = "provision/servervr_playbook.yml"
-        # end
+        servervr.vm.provision "ansible" do |ansible|
+           ansible.playbook = "provision/servervr_playbook.yml"
+        end
     end
 
     # Configure psqlvr
@@ -28,8 +28,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         psqlvr.vm.box = "ubuntu/trusty64"
         psqlvr.vm.hostname = "psqlvr"
         psqlvr.vm.network "private_network", ip: "172.16.3.15"
-        psqlvr.vm.provision "shell" do |s|
-            s.path = "provision/scripts/postgres.sh"
+        psqlvr.vm.provision "ansible" do |ansible|
+           ansible.playbook = "provision/psqlvr_playbook.yml"
         end
     end
 end

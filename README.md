@@ -7,6 +7,7 @@ Installation of 2 ubuntu servers and one of them with postgres database
 ### REQUIREMENTS
 * [Vagrant](https://www.vagrantup.com/)
 * [VirtualBox](https://www.virtualbox.org/) 
+* [Ansible](https://www.ansible.com/)
 
 
 ### INSTALLATION
