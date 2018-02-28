@@ -1,0 +1,8 @@
+
+/.idea/
+/.vagrant/
+
+/provision/host_vars/
+/provision/servervr_playbook.yml
+/provision/roles/
+/provision/psqlvr_playbook.yml
