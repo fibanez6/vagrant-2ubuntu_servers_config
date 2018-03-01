@@ -27,7 +27,7 @@ else
 # Accept all IPv4 connections - FOR DEVELOPMENT ONLY!!!
 host    all         all         0.0.0.0/0             md5
 EOF
-    echo "-------------------- creating postgres vagrant role with password $DB_PASSWORD"
+    echo "-------------------- creating postgres vagrant role with password '$DB_PASSWORD'"
     # Create Role and login
     sudo su postgres -c "psql -c \"CREATE ROLE $DB_USERNAME SUPERUSER LOGIN PASSWORD '$DB_PASSWORD'\" "
     echo "-------------------- creating $DB_NAME database"
