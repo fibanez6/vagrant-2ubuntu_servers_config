@@ -30,7 +30,6 @@ EOF
     echo "-------------------- creating postgres vagrant role with password '$DB_PASSWORD'"
     # Create Role and login
     sudo su postgres -c "psql -c \"CREATE ROLE $DB_USERNAME SUPERUSER LOGIN PASSWORD '$DB_PASSWORD'\" "
-    echo "-------------------- creating $DB_NAME database"
     echo "-------------------- restarting postgres"
     sudo service postgresql restart
 fi
@@ -40,6 +39,7 @@ then
     echo "Database '$DB_NAME' already exists"
 else
     # Create WTM database
+    echo "-------------------- creating $DB_NAME database"
     sudo su postgres -c "createdb -E UTF8 -T template0 --locale=en_US.utf8 -O vagrant $DB_NAME"
     echo "-------------------- upgrading packages to latest"
     apt-get upgrade -y
