@@ -13,20 +13,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
         servervr.vm.box = "ubuntu/trusty64"
         servervr.vm.hostname = "servervr"
-        servervr.vm.network "private_network", ip: "10.0.0.10"
+        servervr.vm.network "private_network", ip: "172.16.0.10"
     end
 
-    # Configure psqlvr
-    config.vm.define "psqlvr" do |psqlvr|
-        psqlvr.vm.provider "virtualbox" do |v|
-            v.name   = "psqlvr"
+    # Configure dbvr
+    config.vm.define "dbvr" do |dbvr|
+        dbvr.vm.provider "virtualbox" do |v|
+            v.name   = "dbvr"
             v.memory = 1024
         end
-        psqlvr.vm.box = "ubuntu/trusty64"
-        psqlvr.vm.hostname = "psqlvr"
-        psqlvr.vm.network "private_network", ip: "10.0.0.15"
-        psqlvr.vm.provision "shell" do |s|
-            s.path = "provision/scripts/postgres.sh"
+        dbvr.vm.box = "ubuntu/trusty64"
+        dbvr.vm.hostname = "dbvr"
+        dbvr.vm.network "private_network", ip: "172.16.0.15"
+        dbvr.vm.network "forwarded_port", guest: 27017, host: 27017
+        dbvr.vm.provision "postgresql", type: "shell" do |s|
+            s.path = "provision/scripts/databases/postgresql.sh"
+        end
+        dbvr.vm.provision "mongodb", type: "shell" do |s|
+            s.path = "provision/scripts/databases/mongodb.sh"
         end
     end
 end
