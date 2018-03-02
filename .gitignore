@@ -6,3 +6,5 @@
 /provision/servervr_playbook.yml
 /provision/roles/
 /provision/psqlvr_playbook.yml
+/provision/credentials/id_rsa
+/provision/credentials/id_rsa.pub
