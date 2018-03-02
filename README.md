@@ -18,7 +18,7 @@ Installation of 2 ubuntu servers and one of them with postgres database
 ```
 
 ## GITHUB SSH-KEY
-You need to (generate a new SSH key)[https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent] and store them on (provision/credentials/)
+You need to [generate a new SSH key](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent) and store the files in (provision/credentials/)
 * id_rsa
 * id_rsa.pub
 
