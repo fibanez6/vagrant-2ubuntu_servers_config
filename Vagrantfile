@@ -1,9 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANTFILE_API_VERSION = "2"
+PROJECT_NAME = "buzzbike-webapp"
+PROJECT_SOURCE_DIR = "~/workplace1/"+PROJECT_NAME
+PROJECT_DESTINATION_DIR = "/home/vagrant/sync/"+PROJECT_NAME
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+Vagrant.configure("2") do |config|
 
     # Configure servervr
     config.vm.define "servervr" do |servervr|
@@ -16,7 +18,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         servervr.vm.network "private_network", ip: "172.16.0.10"
         servervr.vm.network "forwarded_port", guest: 8080, host: 8080
-        servervr.vm.synced_folder "~/workplace1/buzzbike-webapp", "/home/vagrant/buzzbike-webapp"
+        servervr.ssh.forward_agent = true
+        servervr.vm.synced_folder PROJECT_SOURCE_DIR, PROJECT_DESTINATION_DIR,
+            owner: "vagrant",
+            group: "vagrant",
+            mount_options: ["dmode=775,fmode=664"]
 
         servervr.vm.provision "credential-private", type: "file" do |f|
             f.source = "provision/credentials/id_rsa"
@@ -29,7 +35,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         servervr.vm.provision "ssh-agent", type: "shell" do |s|
             s.path = "provision/scripts/ssh.sh"
         end
-        servervr.vm.provision "git", type: "shell" do |s|
+        servervr.vm.provision "utils", type: "shell" do |s|
             s.path = "provision/scripts/utils.sh"
         end
         servervr.vm.provision "git", type: "shell" do |s|
