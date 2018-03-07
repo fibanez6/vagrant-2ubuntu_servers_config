@@ -11,7 +11,7 @@ echo "-------------------- Installing nvm"
 echo "curl https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.sh"
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v$NVM_VERSION/install.sh | bash
 echo "-------------------- Changing '$HOME_DIR/.nvm' owner to '$USER' user"
-sudo chown $USER:$USER $HOME_DIR/.nvm
+sudo chown -R $USER:$USER $HOME_DIR/.nvm
 export NVM_DIR="$HOME_DIR/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
