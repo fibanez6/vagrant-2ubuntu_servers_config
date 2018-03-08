@@ -16,10 +16,11 @@ then
 else
     echo "rolname '$DB_USERNAME' does not exist"
     echo "-------------------- installing postgres"
-    apt-get -y install postgresql-$DB_VERSION postgresql-contrib-$DB_VERSION
+    sudo apt-get update
+    sudo apt-get -y install postgresql-$DB_VERSION postgresql-contrib-$DB_VERSION
     # fix permissions
     echo "-------------------- fixing listen_addresses on postgresql.conf"
-    sudo sed -i "s/#listen_address.*/listen_addresses '*'/" vim po$DB_VERSION/main/postgresql.conf
+    sudo sed -i "s/#listen_address.*/listen_addresses '*'/" /etc/postgresql/$DB_VERSION/main/postgresql.conf
     echo "-------------------- fixing postgres pg_hba.conf file"
     # replace the ipv4 host line with the above line
     sudo sed -i "s/local   all             all                                     peer/local   all             all                                     md5/" /etc/postgresql/$DB_VERSION/main/pg_hba.conf

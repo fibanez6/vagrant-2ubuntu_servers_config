@@ -12,22 +12,26 @@ PROJECTS = {
         :destination => "/home/vagrant/sync/buzzbike-api" }
 }
 
-SHELL_SCRIPTS = {
-    "ssh-agent" => { :path => "provision/scripts/ssh.sh" },
-    "utils" => { :path => "provision/scripts/utils.sh" },
-    "git" => { :path => "provision/scripts/tools/git.sh" },
-    "node-nvm" => { :path => "provision/scripts/platforms/node-nvm.sh" },
-    "python3.5" => { :path => "provision/scripts/platforms/python3.5.sh" },
-    "buzzbike-api" => { :path => "provision/scripts/projects/buzzbike_api_install.sh" }
-}
-
 FILE_COPY = {
     "credential-private" => {
         :source => "provision/credentials/id_rsa",
         :destination => "/home/vagrant/.ssh/id_rsa" },
     "credential-public" => {
         :source => "provision/credentials/id_rsa.pub",
-        :destination => "/home/vagrant/.ssh/id_rsa.pub" }
+        :destination => "/home/vagrant/.ssh/id_rsa.pub" },
+    "buzzbike-env" => {
+        :source => "provision/scripts/projects/buzzbike/.profile",
+        :destination => "/home/vagrant/.profile"
+    }
+}
+
+SHELL_SCRIPTS = {
+    "git" => { :path => "provision/scripts/tools/git.sh" },
+    "add-git-ssh-agent" => { :path => "provision/scripts/tools/git-ssh_agent.sh" },
+    "node-nvm" => { :path => "provision/scripts/platforms/node-nvm.sh" },
+    "python3.5" => { :path => "provision/scripts/platforms/python3.5.sh" },
+    "utils" => { :path => "provision/scripts/utils.sh" },
+    "buzzbike-api" => { :path => "provision/scripts/projects/buzzbike/api_install.sh" }
 }
 
 DB_PORTS = {
@@ -36,13 +40,35 @@ DB_PORTS = {
 }
 
 DB_SCRIPTS = {
+    "mongodb" => { :path => "provision/scripts/databases/mongodb.sh" },
     "postgresql" => { :path => "provision/scripts/databases/postgresql.sh" },
-    "buzzbike-db-setup" => { :path => "provision/scripts/projects/buzzbike_db.sh" },
-    "mongodb" => { :path => "provision/scripts/databases/mongodb.sh" }
+    "postgis" => { :path => "provision/scripts/databases/postgis.sh" },
+    "buzzbike-db-setup" => { :path => "provision/scripts/projects/buzzbike/db.sh" }
 }
 
 
 Vagrant.configure("2") do |config|
+
+    # Configure dbvr
+    config.vm.define "dbvr" do |dbvr|
+        dbvr.vm.provider "virtualbox" do |v|
+            v.name   = "dbvr"
+            v.memory = 2048
+        end
+        dbvr.vm.box = "ubuntu/trusty64"
+        dbvr.vm.hostname = "dbvr"
+        dbvr.vm.network "private_network", ip: "172.16.0.15"
+
+        DB_PORTS.each_with_index do |(name, info), index|
+            dbvr.vm.network "forwarded_port", guest: info[:guest], host: info[:host]
+        end
+
+        DB_SCRIPTS.each_with_index do |(name, info), index|
+            dbvr.vm.provision name, type: "shell" do |s|
+                s.path = info[:path]
+            end
+        end
+    end
 
     # Configure servervr
     config.vm.define "servervr" do |servervr|
@@ -70,29 +96,12 @@ Vagrant.configure("2") do |config|
             end
         end
 
+        servervr.vm.provision "set_vagrant_owner", type: "shell" do |s|
+            s.inline = "sudo chown -R vagrant:vagrant /home/vagrant"
+        end
+
         SHELL_SCRIPTS.each_with_index do |(name, info), index|
             servervr.vm.provision name, type: "shell" do |s|
-                s.path = info[:path]
-            end
-        end
-    end
-
-    # Configure dbvr
-    config.vm.define "dbvr" do |dbvr|
-        dbvr.vm.provider "virtualbox" do |v|
-            v.name   = "dbvr"
-            v.memory = 2048
-        end
-        dbvr.vm.box = "ubuntu/trusty64"
-        dbvr.vm.hostname = "dbvr"
-        dbvr.vm.network "private_network", ip: "172.16.0.15"
-
-        DB_PORTS.each_with_index do |(name, info), index|
-            dbvr.vm.network "forwarded_port", guest: info[:guest], host: info[:host]
-        end
-
-        DB_SCRIPTS.each_with_index do |(name, info), index|
-            dbvr.vm.provision name, type: "shell" do |s|
                 s.path = info[:path]
             end
         end
