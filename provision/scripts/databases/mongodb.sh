@@ -13,6 +13,8 @@ sudo apt-get update
 echo "-------------------- Installing mongodb-enterprise"
 sudo apt-get install -y mongodb-enterprise
 echo "-------------------- Creating folder /data/db/"
-sudo mkdir -p /data/db | sudo chown -R $USER /data/db
-echo "-------------------- fixing bindIp on mongod.conf"
+sudo mkdir -p /data/db | sudo chown -R vagrant /data
+echo "-------------------- Fixing bindIp on mongod.conf"
 sudo sed -i "s/bindIp: 127.0.0.1/bindIp: 0.0.0.0/" /etc/mongod.conf
+echo "-------------------- Restating mongod"
+sudo service mongod restart
